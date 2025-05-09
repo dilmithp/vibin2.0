@@ -71,8 +71,6 @@
                     <a href="<%=request.getContextPath()%>/user/index.jsp" class="text-white">Home</a>
                     <a href="<%=request.getContextPath()%>/user/library.jsp" class="text-gray-300 hover:text-white">Library</a>
                     <a href="<%=request.getContextPath()%>/playlists" class="text-gray-300 hover:text-white">Playlists</a>
-                    <a href="<%=request.getContextPath()%>/user/profile.jsp" class="text-gray-300 hover:text-white">Profile</a>
-                    <a href="<%=request.getContextPath()%>/auth/logout" class="text-gray-300 hover:text-white">Logout</a>
                 </nav>
             </div>
             <div class="flex items-center">
