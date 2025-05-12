@@ -1,6 +1,7 @@
 package com.vibin.dao;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -263,4 +264,26 @@ public class AlbumDAO {
         album.setGenre(rs.getString("genre"));
         return album;
     }
+    /**
+     * Get the number of songs in an album
+     * 
+     * @param albumId The album ID
+     * @return The number of songs in the album
+     * @throws SQLException if a database error occurs
+     */
+    public int getSongCountByAlbum(int albumId) throws SQLException {
+        int count = 0;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM songs WHERE album_id = ?")) {
+            
+            stmt.setInt(1, albumId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        }
+        return count;
+    }
+
 }

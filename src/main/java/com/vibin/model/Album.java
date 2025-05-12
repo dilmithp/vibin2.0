@@ -16,6 +16,8 @@ public class Album implements Serializable {
     private String releaseDate;
     private String genre;
     private List<Song> songs;
+    private String coverImage;
+    private String description;
     
     /**
      * Default constructor
@@ -108,6 +110,21 @@ public class Album implements Serializable {
     
     public int getSongCount() {
         return songs.size();
+    }
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     @Override

@@ -1,6 +1,7 @@
 package com.vibin.service;
 
 import java.sql.SQLException;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -118,4 +119,16 @@ public class AlbumService {
         LoggerUtil.info(logger, "Getting albums with genre: " + genre);
         return albumDAO.getAlbumsByGenre(genre);
     }
+    /**
+     * Get the number of songs in an album
+     * 
+     * @param albumId The album ID
+     * @return The number of songs in the album
+     * @throws SQLException if a database error occurs
+     */
+    public int getSongCountByAlbum(int albumId) throws SQLException {
+        LoggerUtil.info(logger, "Getting song count for album ID: " + albumId);
+        return albumDAO.getSongCountByAlbum(albumId);
+    }
+
 }

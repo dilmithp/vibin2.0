@@ -1,12 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.vibin.model.Artist" %>
+<%@ page import="com.vibin.model.Album" %>
 <%@ page import="com.vibin.service.ArtistService" %>
+<%@ page import="com.vibin.service.AlbumService" %>
+<%@ page import="java.util.List" %>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Vibin - Add New Album</title>
+    <title>Vibin - Add New Song</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
@@ -29,9 +32,13 @@
         
         // Initialize services
         ArtistService artistService = new ArtistService();
+        AlbumService albumService = new AlbumService();
         
         // Get artist details
         Artist artist = artistService.getArtist(artistId);
+        
+        // Get artist's albums for dropdown
+        List<Album> artistAlbums = albumService.getAlbumsByArtist(artistName);
     %>
 
     <div class="flex h-screen overflow-hidden">
@@ -68,10 +75,10 @@
                 <a href="<%=request.getContextPath()%>/artist/artist-songs.jsp" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
                     <i class="fas fa-music mr-3"></i> My Songs
                 </a>
-                <a href="<%=request.getContextPath()%>/artist/add-album.jsp" class="flex items-center p-2 rounded-md bg-gray-700 text-white">
+                <a href="<%=request.getContextPath()%>/artist/add-album.jsp" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
                     <i class="fas fa-plus mr-3"></i> Add Album
                 </a>
-                <a href="<%=request.getContextPath()%>/artist/add-song.jsp" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
+                <a href="<%=request.getContextPath()%>/artist/add-song.jsp" class="flex items-center p-2 rounded-md bg-gray-700 text-white">
                     <i class="fas fa-plus mr-3"></i> Add Song
                 </a>
                 <a href="<%=request.getContextPath()%>/artist/artist-profile.jsp" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
@@ -88,17 +95,17 @@
             <!-- Header -->
             <div class="bg-gray-800 p-4 shadow-md">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-xl font-bold">Add New Album</h2>
+                    <h2 class="text-xl font-bold">Add New Song</h2>
                     <div class="flex items-center">
                         <span class="text-sm text-gray-400">Tuesday, May 13, 2025, 3:51 AM +0530</span>
                     </div>
                 </div>
             </div>
             
-            <!-- Add Album Form -->
+            <!-- Add Song Form -->
             <div class="p-6">
                 <div class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-lg p-6">
-                    <h3 class="text-2xl font-bold mb-6">Album Details</h3>
+                    <h3 class="text-2xl font-bold mb-6">Song Details</h3>
                     
                     <% if(request.getAttribute("error") != null) { %>
                         <div class="bg-red-600 bg-opacity-25 border border-red-600 text-red-500 px-4 py-3 rounded mb-4">
@@ -106,59 +113,53 @@
                         </div>
                     <% } %>
                     
-                    <form action="<%=request.getContextPath()%>/artist/add-album" method="post" class="space-y-6" id="albumForm" onsubmit="return validateForm()">
+                    <form action="<%=request.getContextPath()%>/artist/add-song" method="post" class="space-y-6" id="songForm" onsubmit="return validateForm()">
                         <div>
-                            <label for="albumName" class="block text-sm font-medium text-gray-400 mb-2">Album Title</label>
-                            <input type="text" id="albumName" name="albumName" required minlength="4" maxlength="150"
+                            <label for="songName" class="block text-sm font-medium text-gray-400 mb-2">Song Title</label>
+                            <input type="text" id="songName" name="songName" required minlength="4" maxlength="150"
                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <p id="albumNameError" class="text-red-500 text-xs mt-1 hidden">Album title must be at least 4 characters long</p>
+                            <p id="songNameError" class="text-red-500 text-xs mt-1 hidden">Song title must be at least 4 characters long</p>
                         </div>
                         
                         <div>
-                            <label for="genre" class="block text-sm font-medium text-gray-400 mb-2">Genre</label>
-                            <select id="genre" name="genre" required
+                            <label for="albumId" class="block text-sm font-medium text-gray-400 mb-2">Album</label>
+                            <select id="albumId" name="albumId"
                                     class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                <option value="">Select Genre</option>
-                                <option value="Pop">Pop</option>
-                                <option value="Rock">Rock</option>
-                                <option value="Hip Hop">Hip Hop</option>
-                                <option value="R&B">R&B</option>
-                                <option value="Electronic">Electronic</option>
-                                <option value="Jazz">Jazz</option>
-                                <option value="Classical">Classical</option>
-                                <option value="Country">Country</option>
-                                <option value="Folk">Folk</option>
-                                <option value="Other">Other</option>
+                                <option value="0">No Album (Single)</option>
+                                <% for (Album album : artistAlbums) { %>
+                                    <option value="<%= album.getAlbumId() %>"><%= album.getAlbumName() %></option>
+                                <% } %>
                             </select>
-                            <p id="genreError" class="text-red-500 text-xs mt-1 hidden">Please select a genre</p>
+                            <% if (artistAlbums.isEmpty()) { %>
+                                <p class="text-gray-500 text-xs mt-1">You don't have any albums yet. <a href="<%=request.getContextPath()%>/artist/add-album.jsp" class="text-purple-400 hover:text-purple-300">Create an album</a></p>
+                            <% } %>
                         </div>
                         
                         <div>
-                            <label for="releaseDate" class="block text-sm font-medium text-gray-400 mb-2">Release Date</label>
-                            <input type="date" id="releaseDate" name="releaseDate" required
+                            <label for="lyricist" class="block text-sm font-medium text-gray-400 mb-2">Lyricist</label>
+                            <input type="text" id="lyricist" name="lyricist" maxlength="100"
                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <p id="releaseDateError" class="text-red-500 text-xs mt-1 hidden">Please select a release date</p>
                         </div>
                         
                         <div>
-                            <label for="coverImage" class="block text-sm font-medium text-gray-400 mb-2">Cover Image (Optional)</label>
-                            <input type="file" id="coverImage" name="coverImage" accept="image/*"
+                            <label for="musicDirector" class="block text-sm font-medium text-gray-400 mb-2">Music Director</label>
+                            <input type="text" id="musicDirector" name="musicDirector" maxlength="100"
                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <p class="text-gray-500 text-xs mt-1">Recommended size: 500x500 pixels</p>
                         </div>
                         
                         <div>
-                            <label for="description" class="block text-sm font-medium text-gray-400 mb-2">Description (Optional)</label>
-                            <textarea id="description" name="description" rows="4"
-                                      class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                            <label for="audioFile" class="block text-sm font-medium text-gray-400 mb-2">Audio File</label>
+                            <input type="file" id="audioFile" name="audioFile" accept="audio/*"
+                                   class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <p class="text-gray-500 text-xs mt-1">Supported formats: MP3, WAV, FLAC (Max size: 20MB)</p>
                         </div>
                         
                         <div class="flex justify-end space-x-4">
-                            <a href="<%=request.getContextPath()%>/artist/artist-albums.jsp" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+                            <a href="<%=request.getContextPath()%>/artist/artist-songs.jsp" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
                                 Cancel
                             </a>
                             <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md">
-                                Add Album
+                                Add Song
                             </button>
                         </div>
                     </form>
@@ -169,74 +170,31 @@
 
     <script>
         function validateForm() {
-            const albumName = document.getElementById('albumName').value;
-            const genre = document.getElementById('genre').value;
-            const releaseDate = document.getElementById('releaseDate').value;
-            
-            const albumNameError = document.getElementById('albumNameError');
-            const genreError = document.getElementById('genreError');
-            const releaseDateError = document.getElementById('releaseDateError');
+            const songName = document.getElementById('songName').value;
+            const songNameError = document.getElementById('songNameError');
             
             let isValid = true;
             
-            // Check if album name has at least 4 characters
-            if (albumName.length < 4) {
-                albumNameError.classList.remove('hidden');
+            // Check if song name has at least 4 characters
+            if (songName.length < 4) {
+                songNameError.classList.remove('hidden');
                 isValid = false;
             } else {
-                albumNameError.classList.add('hidden');
-            }
-            
-            // Check if genre is selected
-            if (!genre) {
-                genreError.classList.remove('hidden');
-                isValid = false;
-            } else {
-                genreError.classList.add('hidden');
-            }
-            
-            // Check if release date is selected
-            if (!releaseDate) {
-                releaseDateError.classList.remove('hidden');
-                isValid = false;
-            } else {
-                releaseDateError.classList.add('hidden');
+                songNameError.classList.add('hidden');
             }
             
             return isValid;
         }
         
         // Real-time validation
-        document.getElementById('albumName').addEventListener('input', function() {
-            const albumName = this.value;
-            const albumNameError = document.getElementById('albumNameError');
+        document.getElementById('songName').addEventListener('input', function() {
+            const songName = this.value;
+            const songNameError = document.getElementById('songNameError');
             
-            if (albumName.length < 4 && albumName.length > 0) {
-                albumNameError.classList.remove('hidden');
+            if (songName.length < 4 && songName.length > 0) {
+                songNameError.classList.remove('hidden');
             } else {
-                albumNameError.classList.add('hidden');
-            }
-        });
-        
-        document.getElementById('genre').addEventListener('change', function() {
-            const genre = this.value;
-            const genreError = document.getElementById('genreError');
-            
-            if (!genre) {
-                genreError.classList.remove('hidden');
-            } else {
-                genreError.classList.add('hidden');
-            }
-        });
-        
-        document.getElementById('releaseDate').addEventListener('change', function() {
-            const releaseDate = this.value;
-            const releaseDateError = document.getElementById('releaseDateError');
-            
-            if (!releaseDate) {
-                releaseDateError.classList.remove('hidden');
-            } else {
-                releaseDateError.classList.add('hidden');
+                songNameError.classList.add('hidden');
             }
         });
     </script>

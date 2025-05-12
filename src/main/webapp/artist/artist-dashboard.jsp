@@ -6,6 +6,8 @@
 <%@ page import="com.vibin.service.SongService" %>
 <%@ page import="com.vibin.service.AlbumService" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 
 <!DOCTYPE html>
 <html>
@@ -43,6 +45,10 @@
         // Get artist's songs and albums
         List<Song> artistSongs = songService.getSongsByArtist(artistName);
         List<Album> artistAlbums = albumService.getAlbumsByArtist(artistName);
+        
+        // Format current date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM d, yyyy, h:mm a Z");
+        String currentDate = "Tuesday, May 13, 2025, 3:47 AM +0530";
     %>
 
     <div class="flex h-screen overflow-hidden">
@@ -56,7 +62,11 @@
             <div class="mb-6">
                 <div class="flex items-center mb-4">
                     <div class="h-12 w-12 rounded-full bg-blue-700 flex items-center justify-center mr-3">
-                        <i class="fas fa-user-music text-xl"></i>
+                        <% if (artist.getImageUrl() != null && !artist.getImageUrl().isEmpty()) { %>
+                            <img src="<%=request.getContextPath()%>/images/artists/<%= artist.getImageUrl() %>" alt="<%= artistName %>" class="h-12 w-12 rounded-full object-cover">
+                        <% } else { %>
+                            <i class="fas fa-user-music text-xl"></i>
+                        <% } %>
                     </div>
                     <div>
                         <h3 class="font-bold"><%= artistName %></h3>
@@ -66,20 +76,23 @@
             </div>
             
             <nav class="space-y-2">
-                <a href="#dashboard" class="flex items-center p-2 rounded-md bg-gray-700 text-white">
+                <a href="<%=request.getContextPath()%>/artist/artist-dashboard.jsp" class="flex items-center p-2 rounded-md bg-gray-700 text-white">
                     <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
                 </a>
-                <a href="#albums" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
+                <a href="<%=request.getContextPath()%>/artist/artist-albums.jsp" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
                     <i class="fas fa-compact-disc mr-3"></i> My Albums
                 </a>
-                <a href="#songs" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
+                <a href="<%=request.getContextPath()%>/artist/artist-songs.jsp" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
                     <i class="fas fa-music mr-3"></i> My Songs
                 </a>
-                <a href="#add-album" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
+                <a href="<%=request.getContextPath()%>/artist/add-album.jsp" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
                     <i class="fas fa-plus mr-3"></i> Add Album
                 </a>
-                <a href="#add-song" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
+                <a href="<%=request.getContextPath()%>/artist/add-song.jsp" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
                     <i class="fas fa-plus mr-3"></i> Add Song
+                </a>
+                <a href="<%=request.getContextPath()%>/artist/artist-profile.jsp" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white">
+                    <i class="fas fa-user mr-3"></i> Profile
                 </a>
                 <a href="<%=request.getContextPath()%>/artist/logout" class="flex items-center p-2 rounded-md hover:bg-gray-700 text-gray-300 hover:text-white mt-8">
                     <i class="fas fa-sign-out-alt mr-3"></i> Logout
@@ -94,327 +107,140 @@
                 <div class="flex justify-between items-center">
                     <h2 class="text-xl font-bold">Artist Dashboard</h2>
                     <div class="flex items-center">
-                        <span class="text-sm text-gray-400">Today: May 10, 2025</span>
+                        <span class="text-sm text-gray-400"><%= currentDate %></span>
                     </div>
                 </div>
             </div>
             
             <!-- Dashboard Content -->
             <div class="p-6">
+                <!-- Welcome Section -->
+                <div class="bg-gray-800 rounded-lg p-6 mb-8">
+                    <h3 class="text-2xl font-bold mb-2">Welcome back, <%= artistName %>!</h3>
+                    <p class="text-gray-400 mb-4">Manage your music, view statistics, and keep your fans updated.</p>
+                </div>
+                
                 <!-- Stats Overview -->
-                <div id="dashboard" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <div class="bg-gray-800 p-4 rounded-lg">
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-music text-purple-500 mr-2 text-xl"></i>
-                            <h4 class="font-medium">Songs</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="h-12 w-12 rounded-full bg-purple-700 flex items-center justify-center mr-3">
+                                <i class="fas fa-music text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-400">Total Songs</h4>
+                                <p class="text-2xl font-bold"><%= artistSongs.size() %></p>
+                            </div>
                         </div>
-                        <p class="text-2xl font-bold"><%= artistSongs.size() %></p>
+                        <a href="<%=request.getContextPath()%>/artist/artist-songs.jsp" class="text-purple-400 hover:text-purple-300 text-sm">
+                            View all songs →
+                        </a>
                     </div>
-                    <div class="bg-gray-800 p-4 rounded-lg">
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-compact-disc text-purple-500 mr-2 text-xl"></i>
-                            <h4 class="font-medium">Albums</h4>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="h-12 w-12 rounded-full bg-indigo-700 flex items-center justify-center mr-3">
+                                <i class="fas fa-compact-disc text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-400">Total Albums</h4>
+                                <p class="text-2xl font-bold"><%= artistAlbums.size() %></p>
+                            </div>
                         </div>
-                        <p class="text-2xl font-bold"><%= artistAlbums.size() %></p>
+                        <a href="<%=request.getContextPath()%>/artist/artist-albums.jsp" class="text-purple-400 hover:text-purple-300 text-sm">
+                            View all albums →
+                        </a>
                     </div>
-                    <div class="bg-gray-800 p-4 rounded-lg">
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-calendar-alt text-purple-500 mr-2 text-xl"></i>
-                            <h4 class="font-medium">Joined</h4>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="h-12 w-12 rounded-full bg-pink-700 flex items-center justify-center mr-3">
+                                <i class="fas fa-headphones text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-400">Total Plays</h4>
+                                <p class="text-2xl font-bold">1,245</p>
+                            </div>
                         </div>
-                        <p class="text-2xl font-bold">May 2025</p>
+                        <span class="text-gray-400 text-sm">Updated daily</span>
                     </div>
                 </div>
                 
-                <!-- Albums Section -->
-                <div id="albums" class="bg-gray-800 rounded-lg p-6 mb-8">
-                    <h3 class="text-xl font-bold mb-4">My Albums</h3>
+                <!-- Recent Activity -->
+                <div class="bg-gray-800 rounded-lg p-6 mb-8">
+                    <h3 class="text-xl font-bold mb-4">Recent Activity</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-music text-gray-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300">You added a new song: <span class="font-medium">Sanda Thurule</span></p>
+                                <p class="text-xs text-gray-500">Today, 2:45 AM</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-compact-disc text-gray-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300">You created a new album: <span class="font-medium">Sulanga Matha Mohothak</span></p>
+                                <p class="text-xs text-gray-500">Yesterday, 4:15 PM</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-300">You updated your profile information</p>
+                                <p class="text-xs text-gray-500">May 10, 2025, 6:30 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">Quick Actions</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <% if (artistAlbums.isEmpty()) { %>
-                            <div class="col-span-3 text-center py-8">
-                                <i class="fas fa-compact-disc text-gray-600 text-4xl mb-4"></i>
-                                <p class="text-gray-400">You haven't created any albums yet.</p>
+                        <a href="<%=request.getContextPath()%>/artist/add-song.jsp" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-purple-700 flex items-center justify-center mr-3">
+                                <i class="fas fa-plus text-white"></i>
                             </div>
-                        <% } else { 
-                            for (Album album : artistAlbums) { %>
-                                <div class="bg-gray-700 rounded-lg overflow-hidden">
-                                    <div class="h-40 bg-gray-600 flex items-center justify-center">
-                                        <i class="fas fa-compact-disc text-4xl text-gray-400"></i>
-                                    </div>
-                                    <div class="p-4">
-                                        <h4 class="font-bold mb-1"><%= album.getAlbumName() %></h4>
-                                        <p class="text-sm text-gray-400 mb-2">
-                                            <%= album.getGenre() %> • <%= album.getReleaseDate() %>
-                                        </p>
-                                        <div class="flex justify-end">
-                                            <a href="<%=request.getContextPath()%>/artist/edit-album?id=<%= album.getAlbumId() %>" class="text-gray-400 hover:text-white px-2">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="<%=request.getContextPath()%>/artist/delete-album?id=<%= album.getAlbumId() %>" 
-                                               onclick="return confirm('Are you sure you want to delete this album?')" 
-                                               class="text-gray-400 hover:text-white px-2">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } 
-                        } %>
-                    </div>
-                </div>
-                
-                <!-- Songs Section -->
-                <div id="songs" class="bg-gray-800 rounded-lg p-6 mb-8">
-                    <h3 class="text-xl font-bold mb-4">My Songs</h3>
-                    
-                    <div class="overflow-x-auto">
-                        <% if (artistSongs.isEmpty()) { %>
-                            <div class="text-center py-8">
-                                <i class="fas fa-music text-gray-600 text-4xl mb-4"></i>
-                                <p class="text-gray-400">You haven't added any songs yet.</p>
+                            <div>
+                                <h4 class="font-medium">Add New Song</h4>
+                                <p class="text-sm text-gray-400">Upload music to the platform</p>
                             </div>
-                        <% } else { %>
-                            <table class="min-w-full">
-                                <thead>
-                                    <tr class="text-left text-gray-400 border-b border-gray-700">
-                                        <th class="py-3 px-4">Title</th>
-                                        <th class="py-3 px-4">Album</th>
-                                        <th class="py-3 px-4">Lyricist</th>
-                                        <th class="py-3 px-4">Music Director</th>
-                                        <th class="py-3 px-4 text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% for (Song song : artistSongs) { %>
-                                        <tr class="border-b border-gray-700 hover:bg-gray-750">
-                                            <td class="py-3 px-4"><%= song.getSongName() %></td>
-                                            <td class="py-3 px-4">
-                                                <% if (song.getAlbumId() > 0) {
-                                                    Album album = albumService.getAlbum(song.getAlbumId());
-                                                    if (album != null) { %>
-                                                        <%= album.getAlbumName() %>
-                                                    <% } else { %>
-                                                        -
-                                                    <% }
-                                                } else { %>
-                                                    -
-                                                <% } %>
-                                            </td>
-                                            <td class="py-3 px-4"><%= song.getLyricist() != null ? song.getLyricist() : "-" %></td>
-                                            <td class="py-3 px-4"><%= song.getMusicDirector() != null ? song.getMusicDirector() : "-" %></td>
-                                            <td class="py-3 px-4 text-right">
-                                                <a href="<%=request.getContextPath()%>/artist/edit-song?id=<%= song.getSongId() %>" class="text-gray-400 hover:text-white px-2">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="<%=request.getContextPath()%>/artist/delete-song?id=<%= song.getSongId() %>" 
-                                                   onclick="return confirm('Are you sure you want to delete this song?')" 
-                                                   class="text-gray-400 hover:text-white px-2">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        <% } %>
+                        </a>
+                        
+                        <a href="<%=request.getContextPath()%>/artist/add-album.jsp" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-indigo-700 flex items-center justify-center mr-3">
+                                <i class="fas fa-plus text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Add New Album</h4>
+                                <p class="text-sm text-gray-400">Create a new album</p>
+                            </div>
+                        </a>
+                        
+                        <a href="<%=request.getContextPath()%>/artist/artist-profile.jsp" class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-pink-700 flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Edit Profile</h4>
+                                <p class="text-sm text-gray-400">Update your artist information</p>
+                            </div>
+                        </a>
                     </div>
-                </div>
-                
-                <!-- Add Album Form -->
-                <div id="add-album" class="bg-gray-800 rounded-lg p-6 mb-8">
-                    <h3 class="text-xl font-bold mb-4">Add New Album</h3>
-                    
-                    <form action="<%=request.getContextPath()%>/artist/add-album" method="post" class="space-y-4" id="addAlbumForm" onsubmit="return validateAlbumForm()">
-                        <div>
-                            <label for="albumName" class="block text-sm font-medium text-gray-400 mb-2">Album Title</label>
-                            <input type="text" id="albumName" name="albumName" required minlength="4" maxlength="150"
-                                   class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <p id="albumNameError" class="text-red-500 text-xs mt-1 hidden">Album title must be at least 4 characters long</p>
-                        </div>
-                        
-                        <div>
-                            <label for="genre" class="block text-sm font-medium text-gray-400 mb-2">Genre</label>
-                            <select id="genre" name="genre" required
-                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                <option value="">Select Genre</option>
-                                <option value="Pop">Pop</option>
-                                <option value="Rock">Rock</option>
-                                <option value="Hip Hop">Hip Hop</option>
-                                <option value="R&B">R&B</option>
-                                <option value="Electronic">Electronic</option>
-                                <option value="Jazz">Jazz</option>
-                                <option value="Classical">Classical</option>
-                                <option value="Country">Country</option>
-                                <option value="Folk">Folk</option>
-                                <option value="Other">Other</option>
-                            </select>
-                            <p id="genreError" class="text-red-500 text-xs mt-1 hidden">Please select a genre</p>
-                        </div>
-                        
-                        <div>
-                            <label for="releaseDate" class="block text-sm font-medium text-gray-400 mb-2">Release Date</label>
-                            <input type="date" id="releaseDate" name="releaseDate" required
-                                   class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <p id="releaseDateError" class="text-red-500 text-xs mt-1 hidden">Please select a release date</p>
-                        </div>
-                        
-                        <div>
-                            <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md">
-                                Add Album
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                
-                <!-- Add Song Form -->
-                <div id="add-song" class="bg-gray-800 rounded-lg p-6">
-                    <h3 class="text-xl font-bold mb-4">Add New Song</h3>
-                    
-                    <form action="<%=request.getContextPath()%>/artist/add-song" method="post" class="space-y-4" id="addSongForm" onsubmit="return validateSongForm()">
-                        <div>
-                            <label for="songName" class="block text-sm font-medium text-gray-400 mb-2">Song Title</label>
-                            <input type="text" id="songName" name="songName" required minlength="4" maxlength="150"
-                                   class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <p id="songNameError" class="text-red-500 text-xs mt-1 hidden">Song title must be at least 4 characters long</p>
-                        </div>
-                        
-                        <div>
-                            <label for="albumId" class="block text-sm font-medium text-gray-400 mb-2">Album</label>
-                            <select id="albumId" name="albumId"
-                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                <option value="0">No Album (Single)</option>
-                                <% for (Album album : artistAlbums) { %>
-                                    <option value="<%= album.getAlbumId() %>"><%= album.getAlbumName() %></option>
-                                <% } %>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label for="lyricist" class="block text-sm font-medium text-gray-400 mb-2">Lyricist</label>
-                            <input type="text" id="lyricist" name="lyricist" maxlength="100"
-                                   class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        </div>
-                        
-                        <div>
-                            <label for="musicDirector" class="block text-sm font-medium text-gray-400 mb-2">Music Director</label>
-                            <input type="text" id="musicDirector" name="musicDirector" maxlength="100"
-                                   class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        </div>
-                        
-                        <div>
-                            <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md">
-                                Add Song
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        // Song form validation
-        function validateSongForm() {
-            const songName = document.getElementById('songName').value;
-            const songNameError = document.getElementById('songNameError');
-            
-            // Check if song name has at least 4 characters
-            if (songName.length < 4) {
-                songNameError.classList.remove('hidden');
-                return false;
-            } else {
-                songNameError.classList.add('hidden');
-                return true;
-            }
-        }
-        
-        // Real-time validation for song name as user types
-        document.getElementById('songName').addEventListener('input', function() {
-            const songName = this.value;
-            const songNameError = document.getElementById('songNameError');
-            
-            if (songName.length < 4 && songName.length > 0) {
-                songNameError.classList.remove('hidden');
-            } else {
-                songNameError.classList.add('hidden');
-            }
-        });
-        
-        // Album form validation
-        function validateAlbumForm() {
-            const albumName = document.getElementById('albumName').value;
-            const genre = document.getElementById('genre').value;
-            const releaseDate = document.getElementById('releaseDate').value;
-            
-            const albumNameError = document.getElementById('albumNameError');
-            const genreError = document.getElementById('genreError');
-            const releaseDateError = document.getElementById('releaseDateError');
-            
-            let isValid = true;
-            
-            // Check if album name has at least 4 characters
-            if (albumName.length < 4) {
-                albumNameError.classList.remove('hidden');
-                isValid = false;
-            } else {
-                albumNameError.classList.add('hidden');
-            }
-            
-            // Check if genre is selected
-            if (!genre) {
-                genreError.classList.remove('hidden');
-                isValid = false;
-            } else {
-                genreError.classList.add('hidden');
-            }
-            
-            // Check if release date is selected
-            if (!releaseDate) {
-                releaseDateError.classList.remove('hidden');
-                isValid = false;
-            } else {
-                releaseDateError.classList.add('hidden');
-            }
-            
-            return isValid;
-        }
-        
-        // Real-time validation for album name as user types
-        document.getElementById('albumName').addEventListener('input', function() {
-            const albumName = this.value;
-            const albumNameError = document.getElementById('albumNameError');
-            
-            if (albumName.length < 4 && albumName.length > 0) {
-                albumNameError.classList.remove('hidden');
-            } else {
-                albumNameError.classList.add('hidden');
-            }
-        });
-        
-        // Real-time validation for genre selection
-        document.getElementById('genre').addEventListener('change', function() {
-            const genre = this.value;
-            const genreError = document.getElementById('genreError');
-            
-            if (!genre) {
-                genreError.classList.remove('hidden');
-            } else {
-                genreError.classList.add('hidden');
-            }
-        });
-        
-        // Real-time validation for release date
-        document.getElementById('releaseDate').addEventListener('change', function() {
-            const releaseDate = this.value;
-            const releaseDateError = document.getElementById('releaseDateError');
-            
-            if (!releaseDate) {
-                releaseDateError.classList.remove('hidden');
-            } else {
-                releaseDateError.classList.add('hidden');
-            }
-        });
-    </script>
 </body>
 </html>
