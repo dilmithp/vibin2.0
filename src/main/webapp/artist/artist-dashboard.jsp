@@ -225,11 +225,12 @@
                 <div id="add-album" class="bg-gray-800 rounded-lg p-6 mb-8">
                     <h3 class="text-xl font-bold mb-4">Add New Album</h3>
                     
-                    <form action="<%=request.getContextPath()%>/artist/add-album" method="post" class="space-y-4">
+                    <form action="<%=request.getContextPath()%>/artist/add-album" method="post" class="space-y-4" id="addAlbumForm" onsubmit="return validateAlbumForm()">
                         <div>
                             <label for="albumName" class="block text-sm font-medium text-gray-400 mb-2">Album Title</label>
-                            <input type="text" id="albumName" name="albumName" required
+                            <input type="text" id="albumName" name="albumName" required minlength="4" maxlength="150"
                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <p id="albumNameError" class="text-red-500 text-xs mt-1 hidden">Album title must be at least 4 characters long</p>
                         </div>
                         
                         <div>
@@ -248,12 +249,14 @@
                                 <option value="Folk">Folk</option>
                                 <option value="Other">Other</option>
                             </select>
+                            <p id="genreError" class="text-red-500 text-xs mt-1 hidden">Please select a genre</p>
                         </div>
                         
                         <div>
                             <label for="releaseDate" class="block text-sm font-medium text-gray-400 mb-2">Release Date</label>
                             <input type="date" id="releaseDate" name="releaseDate" required
                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <p id="releaseDateError" class="text-red-500 text-xs mt-1 hidden">Please select a release date</p>
                         </div>
                         
                         <div>
@@ -268,11 +271,12 @@
                 <div id="add-song" class="bg-gray-800 rounded-lg p-6">
                     <h3 class="text-xl font-bold mb-4">Add New Song</h3>
                     
-                    <form action="<%=request.getContextPath()%>/artist/add-song" method="post" class="space-y-4">
+                    <form action="<%=request.getContextPath()%>/artist/add-song" method="post" class="space-y-4" id="addSongForm" onsubmit="return validateSongForm()">
                         <div>
                             <label for="songName" class="block text-sm font-medium text-gray-400 mb-2">Song Title</label>
-                            <input type="text" id="songName" name="songName" required
+                            <input type="text" id="songName" name="songName" required minlength="4" maxlength="150"
                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <p id="songNameError" class="text-red-500 text-xs mt-1 hidden">Song title must be at least 4 characters long</p>
                         </div>
                         
                         <div>
@@ -288,13 +292,13 @@
                         
                         <div>
                             <label for="lyricist" class="block text-sm font-medium text-gray-400 mb-2">Lyricist</label>
-                            <input type="text" id="lyricist" name="lyricist"
+                            <input type="text" id="lyricist" name="lyricist" maxlength="100"
                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                         </div>
                         
                         <div>
                             <label for="musicDirector" class="block text-sm font-medium text-gray-400 mb-2">Music Director</label>
-                            <input type="text" id="musicDirector" name="musicDirector"
+                            <input type="text" id="musicDirector" name="musicDirector" maxlength="100"
                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                         </div>
                         
@@ -308,5 +312,109 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Song form validation
+        function validateSongForm() {
+            const songName = document.getElementById('songName').value;
+            const songNameError = document.getElementById('songNameError');
+            
+            // Check if song name has at least 4 characters
+            if (songName.length < 4) {
+                songNameError.classList.remove('hidden');
+                return false;
+            } else {
+                songNameError.classList.add('hidden');
+                return true;
+            }
+        }
+        
+        // Real-time validation for song name as user types
+        document.getElementById('songName').addEventListener('input', function() {
+            const songName = this.value;
+            const songNameError = document.getElementById('songNameError');
+            
+            if (songName.length < 4 && songName.length > 0) {
+                songNameError.classList.remove('hidden');
+            } else {
+                songNameError.classList.add('hidden');
+            }
+        });
+        
+        // Album form validation
+        function validateAlbumForm() {
+            const albumName = document.getElementById('albumName').value;
+            const genre = document.getElementById('genre').value;
+            const releaseDate = document.getElementById('releaseDate').value;
+            
+            const albumNameError = document.getElementById('albumNameError');
+            const genreError = document.getElementById('genreError');
+            const releaseDateError = document.getElementById('releaseDateError');
+            
+            let isValid = true;
+            
+            // Check if album name has at least 4 characters
+            if (albumName.length < 4) {
+                albumNameError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                albumNameError.classList.add('hidden');
+            }
+            
+            // Check if genre is selected
+            if (!genre) {
+                genreError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                genreError.classList.add('hidden');
+            }
+            
+            // Check if release date is selected
+            if (!releaseDate) {
+                releaseDateError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                releaseDateError.classList.add('hidden');
+            }
+            
+            return isValid;
+        }
+        
+        // Real-time validation for album name as user types
+        document.getElementById('albumName').addEventListener('input', function() {
+            const albumName = this.value;
+            const albumNameError = document.getElementById('albumNameError');
+            
+            if (albumName.length < 4 && albumName.length > 0) {
+                albumNameError.classList.remove('hidden');
+            } else {
+                albumNameError.classList.add('hidden');
+            }
+        });
+        
+        // Real-time validation for genre selection
+        document.getElementById('genre').addEventListener('change', function() {
+            const genre = this.value;
+            const genreError = document.getElementById('genreError');
+            
+            if (!genre) {
+                genreError.classList.remove('hidden');
+            } else {
+                genreError.classList.add('hidden');
+            }
+        });
+        
+        // Real-time validation for release date
+        document.getElementById('releaseDate').addEventListener('change', function() {
+            const releaseDate = this.value;
+            const releaseDateError = document.getElementById('releaseDateError');
+            
+            if (!releaseDate) {
+                releaseDateError.classList.remove('hidden');
+            } else {
+                releaseDateError.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
