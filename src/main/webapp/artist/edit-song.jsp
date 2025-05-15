@@ -105,13 +105,13 @@
                     
                     <div>
                         <label for="lyricist" class="block text-sm font-medium text-gray-400 mb-2">Lyricist</label>
-                        <input type="text" id="lyricist" name="lyricist" value="<%= song.getLyricist() != null ? song.getLyricist() : "" %>"
+                        <input type="text" id="lyricist" name="lyricist" required value="<%= song.getLyricist() != null ? song.getLyricist() : "" %>"
                                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                     </div>
                     
                     <div>
                         <label for="musicDirector" class="block text-sm font-medium text-gray-400 mb-2">Music Director</label>
-                        <input type="text" id="musicDirector" name="musicDirector" value="<%= song.getMusicDirector() != null ? song.getMusicDirector() : "" %>"
+                        <input type="text" id="musicDirector" name="musicDirector" required value="<%= song.getMusicDirector() != null ? song.getMusicDirector() : "" %>"
                                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
                     </div>
                     
