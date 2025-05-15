@@ -161,6 +161,35 @@
                         </button>
                     </div>
                 </form>
+                
+				<!-- Delete Account Section -->
+				<div class="mt-8 pt-6 border-t border-gray-700">
+				    <h3 class="text-lg font-medium text-red-500 mb-4">Danger Zone</h3>
+				    <p class="text-gray-400 mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+				    
+				    <button type="button" id="deleteAccountBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">
+				        Delete Account
+				    </button>
+				    
+				    <!-- Delete Account Confirmation Modal -->
+				    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+				        <div class="bg-gray-800 p-6 rounded-lg max-w-md">
+				            <h4 class="text-xl font-bold mb-4">Confirm Account Deletion</h4>
+				            <p class="text-gray-300 mb-6">Are you sure you want to delete your account? All your data including playlists and liked songs will be permanently removed.</p>
+				            
+				            <form action="<%=request.getContextPath()%>/users/delete-account" method="post">
+				                <div class="flex justify-end space-x-4">
+				                    <button type="button" id="cancelDeleteBtn" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+				                        No
+				                    </button>
+				                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">
+				                        Yes
+				                    </button>
+				                </div>
+				            </form>
+				        </div>
+				    </div>
+				</div>
             </div>
         </div>
     </main>
@@ -189,27 +218,41 @@
     </footer>
 
     <script>
-        // Form validation
         const form = document.querySelector('form');
         const newPassword = document.getElementById('newPassword');
         const confirmPassword = document.getElementById('confirmPassword');
         
         form.addEventListener('submit', function(e) {
-            // Check if new password fields are filled
             if (newPassword.value || confirmPassword.value) {
-                // Check if passwords match
                 if (newPassword.value !== confirmPassword.value) {
                     e.preventDefault();
                     alert('New passwords do not match!');
                     return;
                 }
                 
-                // Check password strength
                 if (newPassword.value.length < 8) {
                     e.preventDefault();
                     alert('Password must be at least 8 characters long!');
                     return;
                 }
+            }
+        });
+        
+        const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+        const deleteModal = document.getElementById('deleteModal');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+
+        deleteAccountBtn.addEventListener('click', function() {
+            deleteModal.classList.remove('hidden');
+        });
+
+        cancelDeleteBtn.addEventListener('click', function() {
+            deleteModal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', function(e) {
+            if (e.target === deleteModal) {
+                deleteModal.classList.add('hidden');
             }
         });
     </script>
