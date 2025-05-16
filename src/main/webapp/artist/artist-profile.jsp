@@ -90,7 +90,7 @@
                 <div class="flex justify-between items-center">
                     <h2 class="text-xl font-bold">Artist Profile</h2>
                     <div class="flex items-center">
-                        <span class="text-sm text-gray-400">Tuesday, May 13, 2025, 4:07 AM +0530</span>
+                        <span class="text-sm text-gray-400">Thursday, May 15, 2025, 10:38 PM +0530</span>
                     </div>
                 </div>
             </div>
@@ -247,7 +247,7 @@
                     </div>
                     
                     <!-- Change Password Section -->
-                    <div class="bg-gray-800 rounded-lg p-6">
+                    <div class="bg-gray-800 rounded-lg p-6 mb-8">
                         <h3 class="text-xl font-bold mb-4">Security</h3>
                         
                         <div class="flex justify-between items-center">
@@ -258,6 +258,25 @@
                             <button id="changePasswordBtn" class="text-purple-400 hover:text-purple-300">
                                 Change Password
                             </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Delete Account Section -->
+                    <div class="bg-gray-800 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-red-500 mb-4">Danger Zone</h3>
+                        
+                        <div class="border border-red-700 rounded-lg p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-medium">Delete Account</h4>
+                                    <p class="text-gray-400 text-sm">Once you delete your account, there is no going back. Please be certain.</p>
+                                </div>
+                                <form action="<%=request.getContextPath()%>/artist/delete-account" method="post" onsubmit="return confirmDelete()">
+                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">
+                                        Delete Account
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -294,6 +313,11 @@
                 confirmPasswordInput.setCustomValidity('');
             }
         });
+        
+        // Delete account confirmation
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.");
+        }
     </script>
 </body>
 </html>
