@@ -202,7 +202,6 @@
     </div>
     
     <script>
-        // Simple search functionality
         document.getElementById('searchArtist').addEventListener('keyup', function() {
             const searchValue = this.value.toLowerCase();
             const rows = document.querySelectorAll('tbody tr[data-genre]');
@@ -219,7 +218,6 @@
             });
         });
         
-        // Genre filter
         document.getElementById('filterGenre').addEventListener('change', function() {
             const genre = this.value;
             const rows = document.querySelectorAll('tbody tr[data-genre]');

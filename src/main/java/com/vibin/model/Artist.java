@@ -18,24 +18,17 @@ public class Artist implements Serializable {
     private Timestamp createdDate;
     private String email;
     
-    /**
-     * Default constructor
-     */
+
     public Artist() {
     }
     
-    /**
-     * Constructor with essential fields
-     */
+
     public Artist(String artistName, String genre) {
         this.artistName = artistName;
         this.genre = genre;
         this.createdDate = new Timestamp(System.currentTimeMillis());
     }
-    
-    /**
-     * Constructor with all fields
-     */
+
     public Artist(int artistId, String artistName, String bio, String imageUrl, 
                  String genre, String country, Timestamp createdDate, String email) {
         this.artistId = artistId;
@@ -48,7 +41,6 @@ public class Artist implements Serializable {
         this.email = email;
     }
     
-    // Getters and Setters
     public int getArtistId() {
         return artistId;
     }
